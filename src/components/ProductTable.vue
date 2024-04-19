@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { Product } from '../types/index';
+import { ref, onMounted } from 'vue';
+import type { Product } from '../types/index';
 
 const products = ref<Product[]>([]);
 
@@ -12,12 +12,23 @@ const getProducts = async (num: number) => {
   products.value = result;
   console.log(result);
 };
+
+onMounted(() => {
+  getProducts(8);
+});
 </script>
 
 <template>
   <div class="wrapper">
+    <div>
+      <p>Показать...(сколько?)</p>
+      <button @click="getProducts(8)">8 продуктов</button>
+      <button @click="getProducts(16)">16 продуктов</button>
+      <button @click="getProducts(20)">все продукты</button>
+    </div>
     <table>
       <tr>
+        <th>Ссылка</th>
         <th>Категория</th>
         <th>Название</th>
         <th>Описание</th>
@@ -25,6 +36,7 @@ const getProducts = async (num: number) => {
         <th>Цена</th>
       </tr>
       <tr v-for="product in products">
+        <td><RouterLink :to="'/product/' + product.id">product</RouterLink></td>
         <td>{{ product.category }}</td>
         <td>{{ product.title }}</td>
         <td>{{ product.description }}</td>
@@ -32,12 +44,6 @@ const getProducts = async (num: number) => {
         <td>{{ product.price }}</td>
       </tr>
     </table>
-    <div>
-      <p>Показать...(сколько?)</p>
-      <button @click="getProducts(8)">8 продуктов</button>
-      <button @click="getProducts(16)">16 продуктов</button>
-      <button @click="getProducts(20)">все продукты</button>
-    </div>
   </div>
 </template>
 
