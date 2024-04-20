@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import type { Product } from '../types/index';
-import { useProductStore } from '../stores/products';
+import { getAddedProducts } from '../api/api';
 
 const products = ref<Product[]>([]);
 const switchProducts = ref<boolean>(false);
-const productsStore = useProductStore();
 
 const getProducts = async () => {
-  const response = await fetch('https://fakestoreapi.com/products?limit=20');
-  const result = await response.json();
-  products.value = result;
-  console.log(result);
+  getAddedProducts().then((result) => {
+    products.value = result;
+    console.log(result);
+  });
 };
 
 onMounted(() => {
