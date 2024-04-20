@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { Product } from '../types/index';
+import type { Product } from '../types/index';
+import { useRoute } from 'vue-router';
+import { getOneProduct } from '../api/api';
 
 const product = ref<Product>();
+const route: string | string[] = useRoute().params.id;
 
-const getProduct = async (id: number) => {
-  const response = await fetch('https://fakestoreapi.com/products/' + id);
-  const result = await response.json();
-  if (result) {
-    product.value = result;
-  }
-  console.log(result);
+const getProduct = (id: string | string[]) => {
+  getOneProduct(id).then((result: any) => {
+    if (result) {
+      console.log(result);
+      product.value = result;
+    }
+  });
 };
 
 onMounted(() => {
-  getProduct(1);
+  getProduct(route);
 });
 </script>
 
