@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { createNewProduct } from '../api/api';
 
 const category = ref<string>('');
 const title = ref<string>('');
 const description = ref<string>('');
 const price = ref<number>(0);
-const public_product = ref<boolean>(false);
 const file = ref<File | null>();
+const public_product = ref<boolean>(false);
 const msg = ref<string>('');
 const divClass = ref<string>('');
 
@@ -16,27 +17,23 @@ const handleFileChange = (e: any) => {
   }
 };
 
-const createProduct = async () => {
+const createProduct = () => {
   if (
     category.value.length > 1 &&
     title.value.length > 1 &&
     description.value.length > 1 &&
     price.value > 0
   ) {
-    const response = await fetch('https://fakestoreapi.com/products', {
-      method: 'POST',
-      body: JSON.stringify({
-        category: category.value,
-        title: title.value,
-        description: description.value,
-        price: price.value,
-        file: file.value,
-        public: public_product.value,
-        date: new Date(),
-      }),
+    createNewProduct(
+      category.value,
+      title.value,
+      description.value,
+      price.value,
+      file.value,
+      public_product.value,
+    ).then((result: any) => {
+      console.log(result);
     });
-    const result = await response.json();
-    console.log(result);
 
     divClass.value = 'success';
     msg.value = 'Продукт успешно создан!';
