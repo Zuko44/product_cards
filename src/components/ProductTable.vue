@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import type { Product } from '../types/index';
+import { getAllProducts } from '../api/api';
 
 const products = ref<Product[]>([]);
+const DEFAULT_SIZE_PRODUCTS = 8;
 
-const getProducts = async (num: number) => {
-  const response = await fetch(
-    'https://fakestoreapi.com/products?limit=' + num,
-  );
-  const result = await response.json();
-  products.value = result;
-  console.log(result);
+const getProducts = (num?: number) => {
+  getAllProducts(num).then((result: any) => {
+    console.log(result);
+    products.value = result;
+  });
 };
 
 onMounted(() => {
-  getProducts(8);
+  getProducts(DEFAULT_SIZE_PRODUCTS);
 });
 </script>
 
@@ -24,7 +24,8 @@ onMounted(() => {
       <p>Показать...(сколько?)</p>
       <button @click="getProducts(8)">8 продуктов</button>
       <button @click="getProducts(16)">16 продуктов</button>
-      <button @click="getProducts(20)">все продукты</button>
+      <button @click="getProducts(20)">20 продуктов</button>
+      <button @click="getProducts()">все продукты</button>
     </div>
     <table>
       <tr>
