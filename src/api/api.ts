@@ -35,3 +35,11 @@ export const saveNewProduct = async (
   const result = await response.json();
   return result;
 };
+
+export const deleteOneProduct = async (id: string | string[]) => {
+  const response = await fetch('https://fakestoreapi.com/products/' + id, {
+    method: 'DELETE',
+  });
+  const result = await response.json();
+  return result;
+};

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { getOneProduct, saveNewProduct } from '../api/api';
+import router from '../router';
+import { getOneProduct, saveNewProduct, deleteOneProduct } from '../api/api';
 
 const route: string | string[] = useRoute().params.id;
 
@@ -69,6 +70,18 @@ const saveProduct = () => {
   }
 };
 
+const deleteProduct = () => {
+  deleteOneProduct(route).then((result) => {
+    if (result) {
+      console.log(result);
+    }
+
+    setTimeout(() => {
+      router.push({ name: 'home' });
+    }, 3000);
+  });
+};
+
 onMounted(() => {
   getProduct(route);
 });
@@ -125,6 +138,11 @@ onMounted(() => {
       <button type="button" class="btn" @click.prevent="saveProduct">
         Сохранить
       </button>
+      <div>
+        <button type="button" class="btn2" @click.prevent="deleteProduct">
+          Удалить
+        </button>
+      </div>
     </form>
   </div>
 </template>
@@ -186,6 +204,20 @@ textarea {
   border: none;
   border-radius: 7px;
   margin-top: 10px;
+  cursor: pointer;
+}
+
+.btn2 {
+  width: 125px;
+  height: 48px;
+  color: white;
+  font-weight: 14;
+  font-size: 1rem;
+  background-color: red;
+  border: none;
+  border-radius: 7px;
+  margin-top: 10px;
+  cursor: pointer;
 }
 
 .error {
