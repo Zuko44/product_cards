@@ -82,7 +82,11 @@ onMounted(() => {
         </th>
       </tr>
       <tr v-for="product in products">
-        <td><RouterLink :to="'/product/' + product.id">product</RouterLink></td>
+        <td>
+          <RouterLink :to="'/product/' + product.id">{{
+            product.title
+          }}</RouterLink>
+        </td>
         <td>{{ product.category }}</td>
         <td>{{ product.title }}</td>
         <td>{{ product.description }}</td>
