@@ -68,8 +68,15 @@ onMounted(() => {
         <th>Описание</th>
         <th>Изображение</th>
         <th>
-          <span class="sortProducts" @click="sortByAscendingPrice">&uarr;</span
-          >Цена<span class="sortProducts" @click="sortByDescendingPrice"
+          <span
+            title="сортировать по возрастанию цены (от меньшего к большему)"
+            class="sortProducts"
+            @click="sortByAscendingPrice"
+            >&uarr;</span
+          >Цена<span
+            title="сортировать по убыванию цены (от большего к меньшему)"
+            class="sortProducts"
+            @click="sortByDescendingPrice"
             >&darr;</span
           >
         </th>
