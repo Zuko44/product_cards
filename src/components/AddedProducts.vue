@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import type { Product } from '../types/index';
-import { getAddedProducts, deleteOneProduct } from '../api/api';
+import { getProducts, deleteProduct } from '../api/api';
 
 const products = ref<Product[]>([]);
 const switchProducts = ref<boolean>(false);
 
-const getProducts = async () => {
-  getAddedProducts().then((result) => {
+const getProductsHandler = async () => {
+  getProducts().then((result) => {
     products.value = result;
     console.log(result);
   });
 };
 
-const deleteProduct = (id: number) => {
+const deleteProductHandler = (id: number) => {
   const reallyDeleteOrNot = confirm(
     'Вы действительно хотите удалить продукт с id ' + id + '?',
   );
@@ -21,7 +21,7 @@ const deleteProduct = (id: number) => {
   console.log(products.value);
   if (reallyDeleteOrNot) {
     console.log(products.value);
-    deleteOneProduct(id).then((result) => {
+    deleteProduct(id).then((result) => {
       if (result) {
         console.log(result);
         for (let product of products.value) {
@@ -39,20 +39,20 @@ const deleteProduct = (id: number) => {
 };
 
 onMounted(() => {
-  getProducts();
+  getProductsHandler();
 });
 </script>
 
 <template>
   <div class="wrapper">
     <div>
-      <label for="switchProducts">Опубликованные/ Не опубликованные</label>
       <input
         type="checkbox"
         name="switchProducts"
         v-model="switchProducts"
         :checked="switchProducts"
       />
+      <label for="switchProducts">Опубликованные/ Не опубликованные</label>
     </div>
     <table>
       <tr>
@@ -85,11 +85,9 @@ onMounted(() => {
           <td>{{ product.rating.count }}</td>
           <td>{{ product.public }}</td>
           <td>
-            <a
-              :href="'product/' + product.id"
-              @click.prevent="deleteProduct(product.id)"
-              >Удалить, id={{ product.id }}</a
-            >
+            <button class="btn2" @click="deleteProductHandler(product.id)">
+              Удалить
+            </button>
           </td>
         </template>
       </tr>
@@ -109,11 +107,9 @@ onMounted(() => {
         <td>{{ product.rating.count }}</td>
         <td>{{ product.public }}</td>
         <td>
-          <a
-            :href="'product/' + product.id"
-            @click.prevent="deleteProduct(product.id)"
-            >Удалить, id={{ product.id }}</a
-          >
+          <button class="btn2" @click="deleteProductHandler(product.id)">
+            Удалить
+          </button>
         </td>
       </tr>
     </table>
@@ -142,6 +138,19 @@ img {
 }
 
 label {
-  margin-right: 5px;
+  margin: 0px 5px;
+}
+
+.btn2 {
+  width: 80px;
+  height: 40px;
+  color: white;
+  font-weight: 14;
+  font-size: 1rem;
+  background-color: red;
+  border: none;
+  border-radius: 7px;
+  margin-top: 10px;
+  cursor: pointer;
 }
 </style>

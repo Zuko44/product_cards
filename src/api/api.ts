@@ -1,4 +1,4 @@
-export const getAddedProducts = async () => {
+export const getProducts = async () => {
   try {
     const response = await fetch('https://fakestoreapi.com/products?limit=20');
     const result = await response.json();
@@ -8,7 +8,7 @@ export const getAddedProducts = async () => {
   }
 };
 
-export const deleteOneProduct = async (id: number) => {
+export const deleteProduct = async (id: number) => {
   const response = await fetch('https://fakestoreapi.com/products/' + id, {
     method: 'DELETE',
   });
