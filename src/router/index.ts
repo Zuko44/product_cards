@@ -20,6 +20,7 @@ const router = createRouter({
     {
       path: '/edit/:id',
       name: 'editProduct',
+      props: (route) => ({ id: parseInt(route.params.id.toString()) }),
       component: () => import('../components/EditProducts.vue'),
     },
   ],

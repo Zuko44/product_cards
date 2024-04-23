@@ -1,31 +1,39 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineProps } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '../router';
 import { getOneProduct, saveNewProduct, deleteOneProduct } from '../api/api';
 
-const route: string | string[] = useRoute().params.id;
+const route = useRoute();
 
-const id = ref<string | string[]>(route);
+interface Props {
+  id: number;
+}
+
+const props = defineProps<Props>();
+const id = ref<number>(props.id);
 const category = ref<string>('');
 const title = ref<string>('');
 const description = ref<string>('');
 const price = ref<number>(0);
-const file = ref<File | null>();
+const image = ref<string>('');
 const public_product = ref<boolean>(false);
-const rate = ref<number>();
-const count = ref<number>();
+const rate = ref<number>(0);
+const count = ref<number>(0);
 
 const msg = ref<string>('');
 const divClass = ref<string>('');
 
-const handleFileChange = (e: any) => {
-  if (e.target && e.target.files) {
-    file.value = e.target.files[0];
-  }
+const validateProduct = () => {
+  return (
+    category.value.length > 0 &&
+    title.value.length > 0 &&
+    description.value.length > 0 &&
+    price.value > 0
+  );
 };
 
-const getProduct = (id: string | string[]) => {
+const getProduct = (id: number) => {
   getOneProduct(id).then((result: any) => {
     if (result) {
       console.log(result);
@@ -34,7 +42,7 @@ const getProduct = (id: string | string[]) => {
       title.value = result.title;
       description.value = result.description;
       price.value = result.price;
-      file.value = result.file;
+      image.value = result.image;
       public_product.value = result.public;
       rate.value = result.rating.rate;
       count.value = result.rating.count;
@@ -43,35 +51,34 @@ const getProduct = (id: string | string[]) => {
 };
 
 const saveProduct = () => {
-  if (
-    category.value.length > 1 &&
-    title.value.length > 1 &&
-    description.value.length > 1 &&
-    price.value > 0
-  ) {
-    saveNewProduct(
-      category.value,
-      title.value,
-      description.value,
-      price.value,
-      file.value,
-      public_product.value,
-      rate.value,
-      count.value,
-    ).then((result: any) => {
-      console.log(result);
-    });
-    divClass.value = 'success';
-    msg.value = 'Продукт изменён успешно!';
-  } else {
-    divClass.value = 'error';
-    msg.value = 'Проверьте корректность полей и их заполнение!';
-    console.log('error');
-  }
+  saveNewProduct({
+    id: id.value,
+    category: category.value,
+    title: title.value,
+    description: description.value,
+    image: image.value,
+    price: price.value,
+    public: public_product.value,
+    rating: {
+      rate: rate.value,
+      count: count.value,
+    },
+    date: new Date(),
+  }).then((result: any) => {
+    console.log(result);
+    if (result.id) {
+      divClass.value = 'success';
+      msg.value = 'Продукт изменён успешно!';
+    } else {
+      divClass.value = 'error';
+      msg.value = 'Проверьте корректность полей и их заполнение!';
+      console.log('error');
+    }
+  });
 };
 
-const deleteProduct = () => {
-  deleteOneProduct(route).then((result) => {
+const deleteProductHandler = () => {
+  deleteOneProduct(id.value).then((result) => {
     if (result) {
       console.log(result);
     }
@@ -83,7 +90,7 @@ const deleteProduct = () => {
 };
 
 onMounted(() => {
-  getProduct(route);
+  getProduct(id.value);
 });
 </script>
 
@@ -116,8 +123,8 @@ onMounted(() => {
         <input v-model="price" name="price" type="tel" class="fields" />
       </fieldset>
       <fieldset>
-        <legend>Изображение</legend>
-        <input @change="handleFileChange" name="file" type="file" />
+        <legend>Путь к изображению</legend>
+        <input v-model="image" name="avatar" type="text" class="fields" />
       </fieldset>
       <fieldset>
         <legend>Рейтинг</legend>
@@ -128,18 +135,37 @@ onMounted(() => {
         <input v-model="count" name="count" type="tel" class="fields" />
       </fieldset>
       <div class="public">
-        <label for="public_product">Опубликован/Не опубликован</label>
         <input
           type="checkbox"
+          class="public_product"
           v-model="public_product"
           :checked="public_product"
         />
+        <label for="public_product">Опубликован/Не опубликован</label>
       </div>
-      <button type="button" class="btn" @click.prevent="saveProduct">
-        Сохранить
-      </button>
-      <div>
-        <button type="button" class="btn2" @click.prevent="deleteProduct">
+      <div class="buttons">
+        <button
+          v-if="!validateProduct()"
+          disabled
+          title="Все обязательные поля должны быть заполнены!"
+          type="button"
+          class="disabledBtn"
+        >
+          Сохранить
+        </button>
+        <button
+          v-if="validateProduct()"
+          type="button"
+          class="btn"
+          @click.prevent="saveProduct"
+        >
+          Сохранить
+        </button>
+        <button
+          type="button"
+          class="btn2"
+          @click.prevent="deleteProductHandler"
+        >
           Удалить
         </button>
       </div>
@@ -158,8 +184,7 @@ onMounted(() => {
 }
 
 .public input {
-  margin-left: 5px;
-  display: inline;
+  margin: 0px 5px;
 }
 
 fieldset {
@@ -218,6 +243,24 @@ textarea {
   border-radius: 7px;
   margin-top: 10px;
   cursor: pointer;
+}
+
+.disabledBtn {
+  width: 125px;
+  height: 48px;
+  color: white;
+  font-weight: 14;
+  font-size: 1rem;
+  background-color: RGB(128, 128, 128);
+  border: none;
+  border-radius: 7px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.buttons {
+  display: inline-flex;
+  flex-direction: column;
 }
 
 .error {
