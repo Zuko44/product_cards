@@ -5,9 +5,9 @@ import { useRoute } from 'vue-router';
 import { getOneProduct } from '../api/api';
 
 const product = ref<Product>();
-const route: string | string[] = useRoute().params.id;
+const route = parseInt(useRoute().params.id.toString());
 
-const getProduct = (id: string | string[]) => {
+const getProduct = (id: number) => {
   getOneProduct(id).then((result: any) => {
     if (result) {
       console.log(result);
