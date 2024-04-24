@@ -5,8 +5,9 @@ export interface Product {
   description: string;
   image: string;
   price: number;
-  rating: Raiting;
   public: boolean;
+  rating: Raiting;
+  date: Date;
 }
 
 export interface Raiting {
