@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import type { Product } from '../types/index';
-import { useRoute } from 'vue-router';
+// import { useRoute } from 'vue-router';
 import { getOneProduct } from '../api/api';
 
 const product = ref<Product>();
-const route = parseInt(useRoute().params.id.toString());
+// const route = parseInt(useRoute().params.id.toString());
+interface Props {
+  id: number;
+}
+const props = defineProps<Props>();
+const id = props.id;
 
 const getProduct = (id: number) => {
   getOneProduct(id).then((result: any) => {
@@ -17,7 +22,7 @@ const getProduct = (id: number) => {
 };
 
 onMounted(() => {
-  getProduct(route);
+  getProduct(id);
 });
 </script>
 

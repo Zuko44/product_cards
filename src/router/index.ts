@@ -20,6 +20,7 @@ const router = createRouter({
     {
       path: '/product/:id',
       name: 'product',
+      props: (route) => ({ id: parseInt(route.params.id.toString()) }),
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
