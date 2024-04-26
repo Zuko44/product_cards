@@ -1,4 +1,4 @@
-export const getGoods = async () => {
+export const getProducts = async () => {
   try {
     const response = await fetch('https://fakestoreapi.com/products?limit=20');
     const result = await response.json();

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import type { Product } from '../types/index';
-import { getGoods, deleteProduct } from '../api/api';
+import { getProducts, deleteProduct } from '../api/api';
 
 const products = ref<Product[]>([]);
 const switchProducts = ref<boolean>(false);
 
-const getProductsHandler = async () => {
-  getGoods().then((result) => {
+const getProductsHandler = () => {
+  getProducts().then((result) => {
     products.value = result;
     console.log(result);
   });
