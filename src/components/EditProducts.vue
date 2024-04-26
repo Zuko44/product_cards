@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted, defineProps } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, onMounted, computed } from 'vue';
 import router from '../router';
 import { getOneProduct, saveNewProduct, deleteOneProduct } from '../api/api';
-
-const route = useRoute();
 
 interface Props {
   id: number;
 }
 
 const props = defineProps<Props>();
-const id = ref<number>(props.id);
+const id = props.id;
 const category = ref<string>('');
 const title = ref<string>('');
 const description = ref<string>('');
@@ -23,15 +20,6 @@ const count = ref<number>(0);
 
 const msg = ref<string>('');
 const divClass = ref<string>('');
-
-const validateProduct = () => {
-  return (
-    category.value.length > 0 &&
-    title.value.length > 0 &&
-    description.value.length > 0 &&
-    price.value > 0
-  );
-};
 
 const getProduct = (id: number) => {
   getOneProduct(id).then((result: any) => {
@@ -52,7 +40,7 @@ const getProduct = (id: number) => {
 
 const saveProduct = () => {
   saveNewProduct({
-    id: id.value,
+    id: id,
     category: category.value,
     title: title.value,
     description: description.value,
@@ -78,7 +66,7 @@ const saveProduct = () => {
 };
 
 const deleteProductHandler = () => {
-  deleteOneProduct(id.value).then((result) => {
+  deleteOneProduct(id).then((result) => {
     if (result) {
       console.log(result);
     }
@@ -89,8 +77,17 @@ const deleteProductHandler = () => {
   });
 };
 
+const isValid = computed(() => {
+  return (
+    category.value.length > 0 &&
+    title.value.length > 0 &&
+    description.value.length > 0 &&
+    price.value > 0
+  );
+});
+
 onMounted(() => {
-  getProduct(id.value);
+  getProduct(id);
 });
 </script>
 
@@ -145,7 +142,7 @@ onMounted(() => {
       </div>
       <div class="buttons">
         <button
-          v-if="!validateProduct()"
+          v-if="!isValid"
           disabled
           title="Все обязательные поля должны быть заполнены!"
           type="button"
@@ -154,7 +151,7 @@ onMounted(() => {
           Сохранить
         </button>
         <button
-          v-if="validateProduct()"
+          v-if="isValid"
           type="button"
           class="btn"
           @click.prevent="saveProduct"
