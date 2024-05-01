@@ -19,7 +19,7 @@ const router = createRouter({
     },
     {
       path: '/edit/:id',
-      name: 'editProduct',
+      name: 'editProducts',
       props: (route) => ({ id: parseInt(route.params.id.toString()) }),
       component: () => import('../components/EditProducts.vue'),
     },
@@ -39,6 +39,14 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../components/ProductTable.vue'),
+    },
+    {
+      path: '/added',
+      name: 'addedProducts',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../components/AddedProducts.vue'),
     },
   ],
 });
