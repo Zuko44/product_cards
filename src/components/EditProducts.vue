@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import router from '../router';
-import { getOneProduct, saveNewProduct, deleteOneProduct } from '../api/api';
+import { getOneProduct, saveNewProduct, deleteProduct } from '../api/api';
 
 interface Props {
   id: number;
@@ -66,7 +66,7 @@ const saveProduct = () => {
 };
 
 const deleteProductHandler = () => {
-  deleteOneProduct(id).then((result) => {
+  deleteProduct(id).then((result) => {
     if (result) {
       console.log(result);
     }
