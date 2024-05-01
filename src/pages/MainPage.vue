@@ -1,7 +1,16 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import ProductTable from '../components/ProductTable.vue';
+</script>
 
 <template>
-  <div>Карточки продуктов</div>
+  <div class="wrapper">
+    <h2>Карточки продуктов</h2>
+    <ProductTable />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.wrapper {
+  text-align: center;
+}
+</style>
